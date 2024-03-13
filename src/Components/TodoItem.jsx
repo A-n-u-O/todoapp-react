@@ -1,6 +1,6 @@
 import {useState} from "react";
 import CompleteIcon from '../assets/images/icon-cross.svg';
-import { Draggable } from 'react-beautiful-dnd'
+import { Draggable } from "react-beautiful-dnd";
 
 const TodoItem = ({ index, id, checked, updateItem, deleteItem, text }) => {
   const [completed, setCompleted] = useState(checked)

@@ -1,50 +1,47 @@
 import TodoItem from './TodoItem';
 import Filter from './Filter';
-
-import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 const TodoList = ({ items, updateItem, selectedFilter, updateFilter, updateItems, deleteItem, clearCompleted }) => {
   
-  const renderedList = items.map(({id, text, checked}, index) => {
-    return (
-      <TodoItem key={id} index={index} id={id} updateItem={updateItem} deleteItem={deleteItem} checked={checked} text={text}/>
-    )
-  })
+  // Check if items is an array before mapping over it
+  const renderedList = Array.isArray(items) ? items.map(({ id, text, checked }, index) => (
+    <TodoItem key={id} index={index} id={id} updateItem={updateItem} deleteItem={deleteItem} checked={checked} text={text} />
+  )) : [];
 
-  const renderedListActive = items.map(({id, text, checked}, index) => {
-    if (checked) return ''
-    return (
-      <TodoItem key={id} index={index} id={id} updateItem={updateItem} deleteItem={deleteItem} checked={checked} text={text}/>
-    )
-  })
-
-  const renderedListCompleted = items.map(({id, text, checked}, index) => {
-    if (!checked) return ''
-    return (
-      <TodoItem key={id} index={index} id={id} updateItem={updateItem} deleteItem={deleteItem} checked={checked} text={text}/>
-    )
-  })
+  // Similarly, check if items is an array before mapping over it
+  const renderedListActive = Array.isArray(items) ? items.map(({ id, text, checked }, index) => (
+    !checked ? (
+      <TodoItem key={id} index={index} id={id} updateItem={updateItem} deleteItem={deleteItem} checked={checked} text={text} />
+    ) : null
+  )) : [];
+  
+  // Similarly, check if items is an array before mapping over it
+  const renderedListCompleted = Array.isArray(items) ? items.map(({ id, text, checked }, index) => (
+    checked ? (
+      <TodoItem key={id} index={index} id={id} updateItem={updateItem} deleteItem={deleteItem} checked={checked} text={text} />
+    ) : null
+  )) : [];
 
   const renderedFilteredList = () => {
-    if (selectedFilter === 'active') return renderedListActive
-    else if (selectedFilter === 'completed') return renderedListCompleted
-    else return renderedList
-  }
+    if (selectedFilter === 'active') return renderedListActive;
+    else if (selectedFilter === 'completed') return renderedListCompleted;
+    else return renderedList;
+  };
 
   const getItemsLeft = () => {
-    let completedItems = 0
-    let total = items.length
-    completedItems = items.filter(item => item.checked).length
-    return total - completedItems
-  }
+    if (!Array.isArray(items)) return 0; // Return 0 if items is not an array
+    let completedItems = items.filter(item => item.checked).length;
+    return items.length - completedItems;
+  };
 
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
-    const updatedList = Array.from(items)
-    const [reorderedItem] = updatedList.splice(result.source.index, 1)
-    updatedList.splice(result.destination.index, 0, reorderedItem)
-    updateItems(updatedList)
-  }
+    const updatedList = Array.from(items);
+    const [reorderedItem] = updatedList.splice(result.source.index, 1);
+    updatedList.splice(result.destination.index, 0, reorderedItem);
+    updateItems(updatedList);
+  };
 
   return (
     <div className={`todo-list-wrapper`}>
@@ -64,7 +61,7 @@ const TodoList = ({ items, updateItem, selectedFilter, updateFilter, updateItems
         <button aria-label="Clear Completed" className={`btn-clear`} onClick={() => clearCompleted()}>Clear Completed</button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TodoList
+export default TodoList;
